@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Be My Valentine 💌</title>
+  <style>
+    :root{
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#ffffffcc;
+      --text:#1f1f1f;
+      --accent:#ff3b6b;
+      --accent2:#7c3aed;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(1200px 800px at 20% 10%, #fff6, transparent 60%),
+                  radial-gradient(900px 700px at 80% 30%, #fff5, transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* Floating hearts */
+    .heart{
+      position:absolute;
+      width:18px; height:18px;
+      background:rgba(255,59,107,.35);
+      transform: rotate(45deg);
+      border-radius:4px;
+      animation: floatUp linear infinite;
+      filter: blur(.2px);
+    }
+    .heart:before, .heart:after{
+      content:"";
+      position:absolute;
+      width:18px; height:18px;
+      background:inherit;
+      border-radius:50%;
+    }
+    .heart:before{ left:-9px; top:0; }
+    .heart:after{ top:-9px; left:0; }
+    @keyframes floatUp{
+      from{ transform: translateY(60vh) rotate(45deg); opacity:.0; }
+      10%{ opacity:.9; }
+      to{ transform: translateY(-120vh) rotate(45deg); opacity:0; }
+    }
+
+    .wrap{
+      width:min(680px, 92vw);
+      padding:24px;
+      position:relative;
+      z-index:2;
+    }
+    .card{
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid #ffffffaa;
+      border-radius:28px;
+      padding:28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
+      text-align:center;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0 auto 18px;
+      max-width: 46ch;
+      font-size: clamp(15px, 2.2vw, 18px);
+      opacity:.88;
+      line-height:1.45;
+    }
+    .pill{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius: 999px;
+      background: #ffffffb8;
+      border: 1px solid #ffffffcc;
+      font-weight:600;
+      margin-bottom: 16px;
+    }
+    .big{
+      font-size: clamp(18px, 2.6vw, 22px);
+      font-weight:800;
+      margin: 12px 0 18px;
+    }
+
+    .btnRow{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top: 12px;
+      position:relative;
+      min-height:64px;
+    }
+    button{
+      border:0;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font-weight:800;
+      font-size: 16px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+    .yes{
+      background: linear-gradient(135deg, var(--accent), #ff7aa2);
+      color:white;
+    }
+    .no{
+      background: #111827;
+      color:white;
+      opacity:.92;
+      position: relative;
+    }
+    .yes:hover{ transform: translateY(-2px); }
+    .no:hover{ transform: translateY(-2px); opacity:1; }
+
+    .footer{
+      margin-top: 16px;
+      font-size: 13px;
+      opacity:.75;
+    }
+
+    /* Modal */
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.35);
+      padding: 18px;
+      z-index: 20;
+    }
+    .modal{
+      width:min(520px, 92vw);
+      background:white;
+      border-radius:26px;
+      padding:22px;
+      text-align:center;
+      box-shadow: 0 24px 70px rgba(0,0,0,.35);
+      border: 1px solid #ffffffaa;
+    }
+    .modal h2{
+      margin: 2px 0 8px;
+      font-size: 28px;
+      letter-spacing:-.02em;
+    }
+    .modal p{
+      margin: 0 0 14px;
+      line-height:1.45;
+      opacity:.9;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .small{
+      background: #f3f4f6;
+      color:#111827;
+      box-shadow:none;
+      border: 1px solid #e5e7eb;
+      font-weight:700;
+    }
+    a.copyHint{
+      display:inline-block;
+      margin-top: 10px;
+      font-size: 13px;
+      opacity:.8;
+      color: #111827;
+      text-decoration: none;
+      border-bottom: 1px dashed #11182755;
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating hearts container -->
+  <div id="hearts"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="pill" id="toLine">To: <span id="herName">Vanessa Birungi My Snowflake</span> 💖</div>
+      <h1 id="headline">Will you be my Valentine?</h1>
+      <p class="sub" id="message">
+        I was going to write a long speech… but I’ll keep it simple:
+        you make my days better. So… what do you say? 🥰
+      </p>
+
+      <div class="big">Choose wisely 😄</div>
+
+      <div class="btnRow" id="btnRow">
+        <button class="yes" id="yesBtn">Yes! 💘</button>
+        <button class="no" id="noBtn">No 🙈</button>
+      </div>
+
+      <div class="footer">
+        Made with love 💌 <span id="fromLine">— <strong id="yourName">Someone who adores you</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>YAY!! 💖💖💖</h2>
+      <p id="successText">
+        Best decision ever 😌✨ I can’t wait to celebrate with you.</p>
+      <img id="yesPhoto" alt="Us 💖" style="display:none; width:100%; max-width:360px; border-radius:18px; margin:10px auto 0; box-shadow:0 14px 30px rgba(0,0,0,.18);" />
+      <div class="row">
+        <button class="yes" id="confettiBtn">More confetti 🎉</button>
+        <button class="small" id="closeBtn">Close</button>
+      </div>
+      <a class="copyHint" href="#" id="copyLink">Tap to copy this page link</a>
+    </div>
+  </div>
+
+  <script>
+    // ======= Customize via URL parameters =======
+    // Example:
+    // index.html?to=Sarah&from=Frank&msg=I%20love%20you%20so%20much!
+    const params = new URLSearchParams(location.search);
+    const to = params.get("to");
+    const from = params.get("from");
+    const msg = params.get("msg");
+    const headline = params.get("q"); // question/headline
+    const success = params.get("yay");
+
+    if (to) document.getElementById("herName").textContent = to;
+    if (from) document.getElementById("yourName").textContent = from;
+    if (msg) document.getElementById("message").textContent = msg;
+    if (headline) document.getElementById("headline").textContent = headline;
+    if (success) document.getElementById("successText").textContent = success;
+
+    // ======= Floating hearts =======
+    const hearts = document.getElementById("hearts");
+    const makeHeart = () => {
+      const h = document.createElement("div");
+      h.className = "heart";
+      const size = 10 + Math.random() * 18;
+      h.style.width = size + "px";
+      h.style.height = size + "px";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.animationDuration = (5 + Math.random() * 7) + "s";
+      h.style.animationDelay = (Math.random() * 2) + "s";
+      h.style.background = `rgba(255, 59, 107, ${0.18 + Math.random() * 0.35})`;
+      hearts.appendChild(h);
+      setTimeout(() => h.remove(), 14000);
+    };
+    for (let i = 0; i < 18; i++) makeHeart();
+    setInterval(makeHeart, 500);
+
+    // ======= Buttons logic =======
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const overlay = document.getElementById("overlay");
+    const closeBtn = document.getElementById("closeBtn");
+    const confettiBtn = document.getElementById("confettiBtn");
+    const copyLink = document.getElementById("copyLink");
+    const btnRow = document.getElementById("btnRow");
+
+    const pop = (x, y) => {
+      // Lightweight "confetti": burst of tiny hearts
+      for (let i = 0; i < 24; i++) {
+        const p = document.createElement("div");
+        p.className = "heart";
+        const s = 8 + Math.random() * 10;
+        p.style.width = s + "px";
+        p.style.height = s + "px";
+        p.style.left = (x + (Math.random()*140 - 70)) + "px";
+        p.style.top  = (y + (Math.random()*140 - 70)) + "px";
+        p.style.position = "fixed";
+        p.style.animation = "none";
+        p.style.opacity = 1;
+        p.style.transform = "rotate(45deg)";
+        p.style.background = `rgba(255, 59, 107, ${0.25 + Math.random() * 0.55})`;
+        document.body.appendChild(p);
+
+        const dx = (Math.random()*2 - 1) * 180;
+        const dy = (Math.random()*2 - 1) * 180;
+        const rot = 45 + (Math.random()*120 - 60);
+
+        p.animate([
+          { transform:`translate(0,0) rotate(${rot}deg)`, opacity: 1 },
+          { transform:`translate(${dx}px, ${dy}px) rotate(${rot+90}deg)`, opacity: 0 }
+        ], { duration: 900 + Math.random()*400, easing:"cubic-bezier(.2,.8,.2,1)" });
+
+        setTimeout(()=>p.remove(), 1400);
+      }
+    };
+
+    yesBtn.addEventListener("click", (e) => {
+      overlay.style.display = "flex";
+      pop(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
+    });
+
+    confettiBtn.addEventListener("click", () => {
+      pop(window.innerWidth/2, window.innerHeight/2);
+    });
+
+    closeBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) overlay.style.display = "none";
+    });
+
+    // "No" button dodges on hover / tap
+    const moveNo = () => {
+      const rowRect = btnRow.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      // Keep it within the row area (plus some wiggle)
+      const maxX = Math.max(0, rowRect.width - btnRect.width);
+      const maxY = 50; // small vertical range
+
+      const x = Math.random() * maxX;
+      const y = (Math.random() * maxY) - (maxY/2);
+
+      noBtn.style.position = "relative";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    };
+
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, {passive:false});
+
+    // Copy link helper
+    copyLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      try{
+        await navigator.clipboard.writeText(location.href);
+        copyLink.textContent = "Copied! ✅ Now send it to her";
+        setTimeout(()=> copyLink.textContent = "Tap to copy this page link", 2200);
+      }catch{
+        copyLink.textContent = "Copy not supported—just copy from the address bar 🙏";
+        setTimeout(()=> copyLink.textContent = "Tap to copy this page link", 2200);
+      }
+    });
+  </script>
+</body>
+</html>
