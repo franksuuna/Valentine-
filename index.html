@@ -224,7 +224,7 @@
       <h2>YAY!! 💖💖💖</h2>
       <p id="successText">
         Best decision ever 😌✨ I can’t wait to celebrate with you.</p>
-      <img id="yesPhoto" alt="Us 💖" style="display:none; width:100%; max-width:360px; border-radius:18px; margin:10px auto 0; box-shadow:0 14px 30px rgba(0,0,0,.18);" />
+      <img id="yesPhoto" src="us.jpg" alt="Us 💖" style="display:none; width:100%; max-width:360px; border-radius:18px; margin:10px auto 0; box-shadow:0 14px 30px rgba(0,0,0,.18);" />
       <div class="row">
         <button class="yes" id="confettiBtn">More confetti 🎉</button>
         <button class="small" id="closeBtn">Close</button>
@@ -308,9 +308,14 @@
     };
 
     yesBtn.addEventListener("click", (e) => {
-      overlay.style.display = "flex";
-      pop(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
-    });
+  overlay.style.display = "flex";
+
+  const img = document.getElementById("yesPhoto");
+  img.style.display = "block";
+
+  pop(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
+});
+
 
     confettiBtn.addEventListener("click", () => {
       pop(window.innerWidth/2, window.innerHeight/2);
