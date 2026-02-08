@@ -224,7 +224,12 @@
       <h2>YAY!! 💖💖💖</h2>
       <p id="successText">
         Best decision ever 😌✨ I can’t wait to celebrate with you.</p>
-      <img id="yesPhoto" src="us.jpg" alt="Us 💖" style="display:none; width:100%; max-width:360px; border-radius:18px; margin:10px auto 0; box-shadow:0 14px 30px rgba(0,0,0,.18);" />
+      <img id="yesPhoto" alt="Us 💖"
+     style="display:none; width:100%; max-width:360px; border-radius:18px; margin:10px auto 0; box-shadow:0 14px 30px rgba(0,0,0,.18);" />
+<div id="imgError" style="display:none; margin-top:10px; font-size:13px; opacity:.8;">
+  Photo couldn’t load 😭 Check the filename/path.
+</div>
+
       <div class="row">
         <button class="yes" id="confettiBtn">More confetti 🎉</button>
         <button class="small" id="closeBtn">Close</button>
@@ -233,134 +238,180 @@
     </div>
   </div>
 
-  <script>
-    // ======= Customize via URL parameters =======
-    // Example:
-    // index.html?to=Sarah&from=Frank&msg=I%20love%20you%20so%20much!
-    const params = new URLSearchParams(location.search);
-    const to = params.get("to");
-    const from = params.get("from");
-    const msg = params.get("msg");
-    const headline = params.get("q"); // question/headline
-    const success = params.get("yay");
+ <script>
+  // ======= Customize via URL parameters =======
+  // Example:
+  // ?to=Vanessa%20Birungi&from=Frank&msg=...&photo=us.jpg
+  const params = new URLSearchParams(location.search);
 
-    if (to) document.getElementById("herName").textContent = to;
-    if (from) document.getElementById("yourName").textContent = from;
-    if (msg) document.getElementById("message").textContent = msg;
-    if (headline) document.getElementById("headline").textContent = headline;
-    if (success) document.getElementById("successText").textContent = success;
+  const to = params.get("to");
+  const from = params.get("from");
+  const msg = params.get("msg");
+  const headline = params.get("q");   // question/headline
+  const success = params.get("yay");
+  const photoParam = params.get("photo"); // optional: ?photo=images/us.jpg
 
-    // ======= Floating hearts =======
-    const hearts = document.getElementById("hearts");
-    const makeHeart = () => {
-      const h = document.createElement("div");
-      h.className = "heart";
-      const size = 10 + Math.random() * 18;
-      h.style.width = size + "px";
-      h.style.height = size + "px";
-      h.style.left = Math.random() * 100 + "vw";
-      h.style.animationDuration = (5 + Math.random() * 7) + "s";
-      h.style.animationDelay = (Math.random() * 2) + "s";
-      h.style.background = `rgba(255, 59, 107, ${0.18 + Math.random() * 0.35})`;
-      hearts.appendChild(h);
-      setTimeout(() => h.remove(), 14000);
-    };
-    for (let i = 0; i < 18; i++) makeHeart();
-    setInterval(makeHeart, 500);
+  if (to) document.getElementById("herName").textContent = to;
+  if (from) document.getElementById("yourName").textContent = from;
+  if (msg) document.getElementById("message").textContent = msg;
+  if (headline) document.getElementById("headline").textContent = headline;
+  if (success) document.getElementById("successText").textContent = success;
 
-    // ======= Buttons logic =======
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const overlay = document.getElementById("overlay");
-    const closeBtn = document.getElementById("closeBtn");
-    const confettiBtn = document.getElementById("confettiBtn");
-    const copyLink = document.getElementById("copyLink");
-    const btnRow = document.getElementById("btnRow");
+  // ======= Floating hearts =======
+  const hearts = document.getElementById("hearts");
+  const makeHeart = () => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    const size = 10 + Math.random() * 18;
+    h.style.width = size + "px";
+    h.style.height = size + "px";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = (5 + Math.random() * 7) + "s";
+    h.style.animationDelay = (Math.random() * 2) + "s";
+    h.style.background = `rgba(255, 59, 107, ${0.18 + Math.random() * 0.35})`;
+    hearts.appendChild(h);
+    setTimeout(() => h.remove(), 14000);
+  };
+  for (let i = 0; i < 18; i++) makeHeart();
+  setInterval(makeHeart, 500);
 
-    const pop = (x, y) => {
-      // Lightweight "confetti": burst of tiny hearts
-      for (let i = 0; i < 24; i++) {
-        const p = document.createElement("div");
-        p.className = "heart";
-        const s = 8 + Math.random() * 10;
-        p.style.width = s + "px";
-        p.style.height = s + "px";
-        p.style.left = (x + (Math.random()*140 - 70)) + "px";
-        p.style.top  = (y + (Math.random()*140 - 70)) + "px";
-        p.style.position = "fixed";
-        p.style.animation = "none";
-        p.style.opacity = 1;
-        p.style.transform = "rotate(45deg)";
-        p.style.background = `rgba(255, 59, 107, ${0.25 + Math.random() * 0.55})`;
-        document.body.appendChild(p);
+  // ======= Buttons logic =======
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const overlay = document.getElementById("overlay");
+  const closeBtn = document.getElementById("closeBtn");
+  const confettiBtn = document.getElementById("confettiBtn");
+  const copyLink = document.getElementById("copyLink");
+  const btnRow = document.getElementById("btnRow");
 
-        const dx = (Math.random()*2 - 1) * 180;
-        const dy = (Math.random()*2 - 1) * 180;
-        const rot = 45 + (Math.random()*120 - 60);
+  const pop = (x, y) => {
+    for (let i = 0; i < 24; i++) {
+      const p = document.createElement("div");
+      p.className = "heart";
+      const s = 8 + Math.random() * 10;
+      p.style.width = s + "px";
+      p.style.height = s + "px";
+      p.style.left = (x + (Math.random() * 140 - 70)) + "px";
+      p.style.top = (y + (Math.random() * 140 - 70)) + "px";
+      p.style.position = "fixed";
+      p.style.animation = "none";
+      p.style.opacity = 1;
+      p.style.transform = "rotate(45deg)";
+      p.style.background = `rgba(255, 59, 107, ${0.25 + Math.random() * 0.55})`;
+      document.body.appendChild(p);
 
-        p.animate([
-          { transform:`translate(0,0) rotate(${rot}deg)`, opacity: 1 },
-          { transform:`translate(${dx}px, ${dy}px) rotate(${rot+90}deg)`, opacity: 0 }
-        ], { duration: 900 + Math.random()*400, easing:"cubic-bezier(.2,.8,.2,1)" });
+      const dx = (Math.random() * 2 - 1) * 180;
+      const dy = (Math.random() * 2 - 1) * 180;
+      const rot = 45 + (Math.random() * 120 - 60);
 
-        setTimeout(()=>p.remove(), 1400);
+      p.animate([
+        { transform: `translate(0,0) rotate(${rot}deg)`, opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(${rot + 90}deg)`, opacity: 0 }
+      ], { duration: 900 + Math.random() * 400, easing: "cubic-bezier(.2,.8,.2,1)" });
+
+      setTimeout(() => p.remove(), 1400);
+    }
+  };
+
+  // Try to load the photo from a list of likely paths (case-sensitive!)
+  async function loadYesPhoto() {
+    const img = document.getElementById("yesPhoto");
+    const err = document.getElementById("imgError");
+
+    // 1) If you pass ?photo=... in the URL, use that first.
+    // 2) Otherwise try common filenames/locations.
+    const candidates = [
+      photoParam,
+      "us.jpg",
+      "us.JPG",
+      "us.png",
+      "us.PNG",
+      "images/us.jpg",
+      "images/us.JPG",
+      "images/us.png",
+      "images/us.PNG"
+    ].filter(Boolean);
+
+    err.style.display = "none";
+    img.style.display = "none";
+
+    // Helper: check if URL exists (works on GitHub Pages)
+    async function exists(url) {
+      try {
+        const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+        return res.ok;
+      } catch {
+        return false;
       }
-    };
+    }
 
-    yesBtn.addEventListener("click", (e) => {
-  overlay.style.display = "flex";
-
-  const img = document.getElementById("yesPhoto");
-  img.style.display = "block";
-
-  pop(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
-});
-
-
-    confettiBtn.addEventListener("click", () => {
-      pop(window.innerWidth/2, window.innerHeight/2);
-    });
-
-    closeBtn.addEventListener("click", () => {
-      overlay.style.display = "none";
-    });
-
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) overlay.style.display = "none";
-    });
-
-    // "No" button dodges on hover / tap
-    const moveNo = () => {
-      const rowRect = btnRow.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
-
-      // Keep it within the row area (plus some wiggle)
-      const maxX = Math.max(0, rowRect.width - btnRect.width);
-      const maxY = 50; // small vertical range
-
-      const x = Math.random() * maxX;
-      const y = (Math.random() * maxY) - (maxY/2);
-
-      noBtn.style.position = "relative";
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-    };
-
-    noBtn.addEventListener("mouseenter", moveNo);
-    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, {passive:false});
-
-    // Copy link helper
-    copyLink.addEventListener("click", async (e) => {
-      e.preventDefault();
-      try{
-        await navigator.clipboard.writeText(location.href);
-        copyLink.textContent = "Copied! ✅ Now send it to her";
-        setTimeout(()=> copyLink.textContent = "Tap to copy this page link", 2200);
-      }catch{
-        copyLink.textContent = "Copy not supported—just copy from the address bar 🙏";
-        setTimeout(()=> copyLink.textContent = "Tap to copy this page link", 2200);
+    for (const path of candidates) {
+      const url = path + "?v=" + Date.now(); // cache-bust
+      // HEAD-check first so we can show a real error if missing
+      // (Some hosts block HEAD, but GitHub Pages usually allows it.)
+      const ok = await exists(url);
+      if (ok) {
+        img.src = url;
+        img.onload = () => { img.style.display = "block"; };
+        img.onerror = () => { err.style.display = "block"; };
+        return;
       }
-    });
-  </script>
+    }
+
+    // Nothing worked → show error + tell them what to do
+    err.style.display = "block";
+    err.textContent =
+      "Photo couldn’t load 😭 Upload it to the same folder as index.html (or /images) " +
+      "and make sure the filename matches EXACTLY (example: us.jpg).";
+  }
+
+  yesBtn.addEventListener("click", async (e) => {
+    overlay.style.display = "flex";
+    await loadYesPhoto();
+    pop(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
+  });
+
+  confettiBtn.addEventListener("click", () => {
+    pop(window.innerWidth / 2, window.innerHeight / 2);
+  });
+
+  closeBtn.addEventListener("click", () => {
+    overlay.style.display = "none";
+  });
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) overlay.style.display = "none";
+  });
+
+  // "No" button dodges on hover / tap
+  const moveNo = () => {
+    const rowRect = btnRow.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
+    const maxX = Math.max(0, rowRect.width - btnRect.width);
+    const maxY = 50;
+    const x = Math.random() * maxX;
+    const y = (Math.random() * maxY) - (maxY / 2);
+    noBtn.style.position = "relative";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  };
+
+  noBtn.addEventListener("mouseenter", moveNo);
+  noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, { passive: false });
+
+  // Copy link helper
+  copyLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      await navigator.clipboard.writeText(location.href);
+      copyLink.textContent = "Copied! ✅ Now send it to her";
+      setTimeout(() => copyLink.textContent = "Tap to copy this page link", 2200);
+    } catch {
+      copyLink.textContent = "Copy not supported—just copy from the address bar 🙏";
+      setTimeout(() => copyLink.textContent = "Tap to copy this page link", 2200);
+    }
+  });
+</script>
+
 </body>
 </html>
